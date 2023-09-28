@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRecognizer</title>
+    <script src="../public/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+
+
+    <style>
+.outer{
+    width: 50%;
+    margin-left: 29%;
+    border-color: #27292b;
+    height: 100vh;
+    /* background-color: #f1eeee; */
+}
+.header{
+    background-color: #161c22;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #141212; /* Background color for the whole page */
+}
+
+/* Header styles */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Centered text styles */
+.center-text {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Main content styles */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: #ffffff;  */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+/* Select box and input styles */
+#languageSelect,
+#languageSelect1,
+#textInput {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Translate button styles */
+#translateButton {
+  background-color: #37434f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#translateButton:hover {
+  background-color: #27292b; /* Darker shade on hover */
+}
+
+/* Result box styles */
+#translationResult {
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 100px;
+  text-align: center;
+  background-color: #f8f8f8; /* Background color for the result box */
+  font-size: 18px;
+  overflow: auto; /* Add scrollbars for long text */
+}
+
+    </style>
+</head>
+<body>
+    
+    <div class="header">
+        <center><h1>STranslator</h1></center>
+        <center><p>provide me any indian language i will provide you selected language text</p></center>
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+    <div class="outer">
+    <div class="main-content">
+    
+        <select id="languageSelect" onchange="selectLanguage()">
+            <option value="">Select Input Language</option>
+            <option value="hi">Hindi</option>
+            <option value="bn">Bengali</option>
+            <option value="te">Telugu</option>
+            <option value="mr">Marathi</option>
+            <option value="ta">Tamil</option>
+            <option value="ur">Urdu</option>
+            <option value="gu">Gujarati</option>
+            <option value="kn">Kannada</option>
+            <option value="or">Odia</option>
+            <option value="pa">Punjabi</option>
+            <option value="ml">Malayalam</option>
+            <option value="as">Assamese</option>
+            <option value="mai">Maithili</option>
+            <option value="sat">Santali</option>
+            <option value="ks">Kashmiri</option>
+            <option value="ne">Nepali</option>
+            <option value="kok">Konkani</option>
+            <option value="sd">Sindhi</option>
+            <option value="mni">Manipuri</option>
+            <option value="brx">Bodo</option>
+            <option value="sa-IN">Sanskrit</option>
+            <option value="si">Sinhala (Sri Lanka)</option>
+            <option value="dv">Dhivehi (Maldives)</option>
+            <option value="en">English (India)</option>
+    
+        </select>
+        <br>
+        <label for="textInput"><b>Enter Text to Translate:</b></label>
+        <input type="text" id="textInput">
+        <br>
+        <select id="languageSelect1" onchange="selectLanguage1()">
+            <option value="">Select Output Language</option>
+            <option value="hi">Hindi</option>
+            <option value="bn">Bengali</option>
+            <option value="te">Telugu</option>
+            <option value="mr">Marathi</option>
+            <option value="ta">Tamil</option>
+            <option value="ur">Urdu</option>
+            <option value="gu">Gujarati</option>
+            <option value="kn">Kannada</option>
+            <option value="or">Odia</option>
+            <option value="pa">Punjabi</option>
+            <option value="ml">Malayalam</option>
+            <option value="as">Assamese</option>
+            <option value="mai">Maithili</option>
+            <option value="sat">Santali</option>
+            <option value="ks">Kashmiri</option>
+            <option value="ne">Nepali</option>
+            <option value="kok">Konkani</option>
+            <option value="sd">Sindhi</option>
+            <option value="mni">Manipuri</option>
+            <option value="brx">Bodo</option>
+            <option value="sa-IN">Sanskrit</option>
+            <option value="si">Sinhala (Sri Lanka)</option>
+            <option value="dv">Dhivehi (Maldives)</option>
+            <option value="en">English (India)</option>
+    
+        </select>
+        <button id="translateButton" onclick="translateText()">Translate</button>
+        <div id="translationResult"></div>
+    </div>
+   </div>
+    <!-- <script type="module" src="./stt.mjs"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // import { run} from "../views/stt.mjs";
+    
+
+
+        async function translateText() {
+            const languageSelect = document.getElementById("languageSelect");
+            const textInput = document.getElementById("textInput");
+            const translationResult = document.getElementById("translationResult");
+            const selectedLanguage1=document.getElementById('languageSelect1').value;
+            const selectedLanguage = languageSelect.value;
+            const inputText = textInput.value;
+            
+            // You need to replace 'YOUR_API_ENDPOINT' with the actual API endpoint for translation
+            const apiEndpoint = 'http://127.0.0.1:8000';
+            
+            // Make an API request to translate the text
+            // You can use fetch or any other method to send the data to the API
+            // and handle the response here
+            // Example using fetch:
+            const requestData={
+                text:inputText,
+                language:selectedLanguage,
+                lang1:selectedLanguage1
+            }
+            await axios.post(apiEndpoint, requestData, {
+    headers: {
+      'Content-Type': 'application/json', // Specify the content type as JSON
+    },
+    responseType: "text"
+  })
+    .then(response => {
+      // Handle the response data here
+      translationResult.innerHTML = `Translation: ${response.data}`;
+    })
+    .catch(error => {
+      // Handle errors here
+      console.error('Axios error:', error);
+    });
+        }
+
+
+function selectLanguage1() {
+            selectedLanguage = document.getElementById("languageSelect1").value;
+            // You can replace the following alert with any action you need
+            if (selectedLanguage1 !== "") {
+                alert("Selected output Language Code: " + selectedLanguage1);
+            }
+        }
+        function selectLanguage() {
+            selectedLanguage = document.getElementById("languageSelect").value;
+            // You can replace the following alert with any action you need
+            if (selectedLanguage !== "") {
+                alert("Selected input Language Code: " + selectedLanguage);
+            }
+        }
+        
+    
+        // Logout function
+        function logout() {
+            // Perform any necessary user data clearing here
+            // Redirect to the login page
+            window.location.href = 'login'; // Replace '/login' with your actual login page URL
+        }
+        window.addEventListener('beforeunload', clearTempAudioOnRefresh);
+     
+    </script>
+   
+</body>
+</html>
