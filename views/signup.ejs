@@ -6,26 +6,60 @@
             <h2 class="font-weight-bold">Signup System</h2>
             <span>Create a new account</span>
         </div>
-        <form action="/route/signup" method="POST" class="pt-3">
+        <form id="signupForm" action="/route/signup" method="POST" class="pt-3">
             <div class="form-group">
                 <small class="form-text text-muted text-left">Enter your name</small>
-                <input type="text" class="form-control" placeholder="Name" name="name">
+                <input type="text" class="form-control" placeholder="Name" name="name" required>
             </div>
             <div class="form-group">
                 <small class="form-text text-muted text-left">Enter your email address</small>
-                <input type="email" class="form-control" placeholder="Email" name="email">
-                
+                <input type="email" class="form-control" placeholder="Email" name="email" required>
             </div>
             <div class="form-group">
-                <small class="form-text text-muted text-left">Enter your Password (Password must be atleast 6 characters)</small>
-                <input type="password" class="form-control" name="password" placeholder="Password">
+                <small class="form-text text-muted text-left">Enter your Password (Password must be at least 6 characters)</small>
+                <input type="password" class="form-control" name="password" placeholder="Password" required id="password">
+                <div id="passwordStrength" class="mt-2"></div>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" required>
+                <label for="terms"> I agree to the <a href="#">terms and conditions</a></label>
             </div>
             <button type="submit" class="btn btn-primary rounded-pill">Signup</button>
         </form>
         <div class="pt-3">
             <p class="text-muted">Already have an account? <a href="/route/login">Login</a></p>
         </div>
+        <div id="errorMessage" class="text-danger"></div>
     </div>
 </div>
 
 <%- include('footer') -%>
+
+<script>
+    document.getElementById('password').addEventListener('input', function () {
+        const strengthText = document.getElementById('passwordStrength');
+        const password = this.value;
+        let strength = 'Weak';
+        if (password.length >= 6) {
+            strength = 'Moderate';
+            if (/[A-Z]/.test(password) && /[0-9]/.test(password)) {
+                strength = 'Strong';
+            }
+        }
+        strengthText.textContent = `Password strength: ${strength}`;
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', function (event) {
+        const emailInput = this.elements['email'];
+        const errorMessageDiv = document.getElementById('errorMessage');
+        
+        errorMessageDiv.textContent = ''; // Clear previous error messages
+
+        // Basic email format validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInput.value)) {
+            errorMessageDiv.textContent = 'Please enter a valid email address.';
+            event.preventDefault();
+        }
+    });
+</script>
