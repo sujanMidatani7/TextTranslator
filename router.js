@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var admin = require('firebase-admin');
-const serviceAccount = require('C:/Users/mural/OneDrive/Desktop/gdsc/TextTranslator/gdscc-47b39-firebase-adminsdk-f34ms-1ab629b0f9.json'); // Corrected path
+const serviceAccount = require(account); // Corrected path
 const bcrypt = require('bcrypt');
 
 admin.initializeApp({
