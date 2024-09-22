@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
-var admin = require('firebase-admin');// Import Firebase library
-var serviceAccount = require('C:/Users/sujan/Desktop/wd401/wd401-62e7e-firebase-adminsdk-vsyrj-31c1bc5955.json');
+var admin = require('firebase-admin');
+const serviceAccount = require('C:/Users/mural/OneDrive/Desktop/gdsc/TextTranslator/gdscc-47b39-firebase-adminsdk-f34ms-1ab629b0f9.json'); // Corrected path
 const bcrypt = require('bcrypt');
 
 admin.initializeApp({
@@ -9,7 +9,6 @@ admin.initializeApp({
 
 });
 var db = admin.firestore();
-// Initialize Firebase with your config
 //  
 
 
@@ -47,31 +46,33 @@ router.post('/signup', async (req, res) => {
 });
 
 
-// Login user
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        const userSnapshot = await db.collection('loginPage').where('email', '==', email).get();
+
+        if (userSnapshot.empty) {
+            return res.redirect('/route/login?error=' + encodeURIComponent("User Not Found"));
+        }
+
+        const userData = userSnapshot.docs[0].data(); // Get the user data
+        const isPasswordValid = await bcrypt.compare(password, userData.password); 
+
+        if (!isPasswordValid) {
+            return res.redirect('/route/login?error=' + encodeURIComponent("Invalid Password"));
+        }
 
         req.session.user = {
-
             email: email,
         };
 
-        // const hashedPassword = await bcrypt.hash(password, 10);
-        const userSnapshot = await db.collection('loginPage').where('email', '==', email).where('password', '==', password).get();
-        if (userSnapshot.empty) {
-
-            res.redirect('/route/login?error=' + encodeURIComponent("User Not Found"));
-        } else {
-
-            res.redirect('/route/dashboard');
-        }
+        res.redirect('/route/dashboard');
     } catch (error) {
-
         res.redirect('/route/login?error=' + encodeURIComponent(error.message));
     }
 });
+
 
 
 // route for dashboard
