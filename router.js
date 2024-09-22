@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var admin = require('firebase-admin');// Import Firebase library
-var serviceAccount = require('C:/Users/sujan/Desktop/wd401/wd401-62e7e-firebase-adminsdk-vsyrj-31c1bc5955.json');
+var serviceAccount = require('D:/Coding/Web Dev/Git/PR/TextTranslator/texttranslator-e5185-firebase-adminsdk-fuceb-681d6faf3d');
 const bcrypt = require('bcrypt');
 
 admin.initializeApp({
